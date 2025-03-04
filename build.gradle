@@ -192,6 +192,10 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+
+    options.compilerArgs.addAll([
+            "--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED"
+    ])
 }
 
 // IntelliJ no longer downloads javadocs and sources by default.

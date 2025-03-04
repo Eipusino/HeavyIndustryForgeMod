@@ -105,7 +105,7 @@ public class LoneTrailMod {
         if (Config.logDirtBlock)
             LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
+	    LOGGER.info("{}{}", Config.magicNumberIntroduction, Config.magicNumber);
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
@@ -132,5 +132,9 @@ public class LoneTrailMod {
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
+    }
+
+    public static Logger getLogger() {
+        return LOGGER;
     }
 }
