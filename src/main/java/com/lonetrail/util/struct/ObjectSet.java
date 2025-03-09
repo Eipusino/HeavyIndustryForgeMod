@@ -1,7 +1,7 @@
 package com.lonetrail.util.struct;
 
 import com.lonetrail.math.Mathf;
-import com.lonetrail.util.function.BoolFunction;
+import com.lonetrail.util.function.ToBooleanFunction;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -97,10 +97,10 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	/** Allocates a new set with all elements that match the predicate. */
-	public ObjectSet<T> select(BoolFunction<T> predicate) {
+	public ObjectSet<T> select(ToBooleanFunction<T> predicate) {
 		ObjectSet<T> arr = new ObjectSet<>();
 		for (T t : this) {
-			if (predicate.apply(t)) arr.add(t);
+			if (predicate.applyAsBoolean(t)) arr.add(t);
 		}
 		return arr;
 	}

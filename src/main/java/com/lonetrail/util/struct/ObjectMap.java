@@ -1,10 +1,10 @@
 package com.lonetrail.util.struct;
 
 import com.lonetrail.math.Mathf;
-import com.lonetrail.util.function.Consumer2;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -99,7 +99,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Iterates through key/value pairs. */
-	public void forEach(Consumer2<K, V> cons) {
+	public void forEach(BiConsumer<K, V> cons) {
 		for (Entry<K, V> entry : entries()) {
 			cons.accept(entry.key, entry.value);
 		}

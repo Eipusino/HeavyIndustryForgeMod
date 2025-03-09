@@ -194,7 +194,10 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 
     options.compilerArgs.addAll([
-            "--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED"
+            //"--add-exports", "java.base/jdk.internal.loader=ALL-UNNAMED",
+            //"--add-exports", "java.base/jdk.internal.math=ALL-UNNAMED",
+            "--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED",
+            "--add-exports", "java.base/jdk.internal.reflect=ALL-UNNAMED"
     ])
 }
 

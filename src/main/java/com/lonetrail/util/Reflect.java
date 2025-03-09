@@ -7,19 +7,17 @@ import java.lang.reflect.Method;
 import java.util.function.Supplier;
 
 import static com.lonetrail.util.Structs.arrayOf;
+import static com.lonetrail.util.Structs.cast;
 
 public final class Reflect {
-	private Reflect() {
-	}
+	private Reflect() {}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T[] newArray(Class<T> type, int length) {
-		return (T[]) Array.newInstance(type, length);
+		return cast(Array.newInstance(type, length));
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T[] newArray(T[] oldType, int length) {
-		return (T[]) Array.newInstance(oldType.getClass().getComponentType(), length);
+		return cast(Array.newInstance(oldType.getClass().getComponentType(), length));
 	}
 
 	public static boolean isWrapper(Class<?> type) {
@@ -46,21 +44,19 @@ public final class Reflect {
 		return get(null, field);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T get(Object object, Field field) {
 		try {
-			return (T) field.get(object);
+			return cast(field.get(object));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T get(Class<?> type, Object object, String name) {
 		try {
 			Field field = type.getDeclaredField(name);
 			field.setAccessible(true);
-			return (T) field.get(object);
+			return cast(field.get(object));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -100,12 +96,11 @@ public final class Reflect {
 		set(type, null, name, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T invoke(Class<?> type, Object object, String name, Class<?>[] parameterTypes, Object[] args) {
 		try {
 			Method method = type.getDeclaredMethod(name, parameterTypes);
 			method.setAccessible(true);
-			return (T) method.invoke(object, args);
+			return cast(method.invoke(object, args));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -131,10 +126,9 @@ public final class Reflect {
 		return make(type, arrayOf(), arrayOf());
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> T make(String type, Class<?>[] parameterTypes, Object[] args) {
 		try {
-			Class<T> c = (Class<T>) Class.forName(type);
+			Class<T> c = cast(Class.forName(type));
 			return c.getDeclaredConstructor(parameterTypes).newInstance(args);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

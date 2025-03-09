@@ -1,6 +1,6 @@
 package com.lonetrail.util.function;
 
 @FunctionalInterface
-public interface BoolSupplier {
-	boolean get();
+public interface BooleanConsumer {
+	void accept(boolean b);
 }

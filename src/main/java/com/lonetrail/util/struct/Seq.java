@@ -4,19 +4,19 @@ import com.lonetrail.math.Mathf;
 import com.lonetrail.math.Rand;
 import com.lonetrail.util.Select;
 import com.lonetrail.util.Structs;
-import com.lonetrail.util.function.BoolFunction;
-import com.lonetrail.util.function.FloatFunction;
-import com.lonetrail.util.function.Function2;
-import com.lonetrail.util.function.IntFunction;
+import com.lonetrail.util.function.ToBooleanFunction;
+import com.lonetrail.util.function.ToFloatFunction;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -140,10 +140,10 @@ public class Seq<T> implements Iterable<T> {
 	}
 
 	/** @see #Seq(Object[]) */
-	public static <T> Seq<T> select(T[] array, BoolFunction<T> test) {
+	public static <T> Seq<T> select(T[] array, ToBooleanFunction<T> test) {
 		Seq<T> out = new Seq<>(array.length);
 		for (T t : array) {
-			if (test.apply(t)) {
+			if (test.applyAsBoolean(t)) {
 				out.add(t);
 			}
 		}
@@ -176,25 +176,25 @@ public class Seq<T> implements Iterable<T> {
 		return list;
 	}
 
-	public float sumf(FloatFunction<T> summer) {
+	public float sumf(ToFloatFunction<T> summer) {
 		float sum = 0;
 		for (int i = 0; i < size; i++) {
-			sum += summer.apply(items[i]);
+			sum += summer.applyAsFloat(items[i]);
 		}
 		return sum;
 	}
 
-	public int sum(IntFunction<T> summer) {
+	public int sum(ToIntFunction<T> summer) {
 		int sum = 0;
 		for (int i = 0; i < size; i++) {
-			sum += summer.apply(items[i]);
+			sum += summer.applyAsInt(items[i]);
 		}
 		return sum;
 	}
 
-	public <E extends T> void forEach(BoolFunction<? super T> pred, Consumer<E> consumer) {
+	public <E extends T> void forEach(ToBooleanFunction<? super T> pred, Consumer<E> consumer) {
 		for (int i = 0; i < size; i++) {
-			if (pred.apply(items[i])) consumer.accept((E) items[i]);
+			if (pred.applyAsBoolean(items[i])) consumer.accept((E) items[i]);
 		}
 	}
 
@@ -233,43 +233,43 @@ public class Seq<T> implements Iterable<T> {
 	}
 
 	/** @return a new int array with the mapped values. */
-	public IntSeq mapInt(IntFunction<T> mapper) {
+	public IntSeq mapInt(ToIntFunction<T> mapper) {
 		IntSeq arr = new IntSeq(size);
 		for (int i = 0; i < size; i++) {
-			arr.add(mapper.apply(items[i]));
+			arr.add(mapper.applyAsInt(items[i]));
 		}
 		return arr;
 	}
 
 	/** @return a new float array with the mapped values. */
-	public FloatSeq mapFloat(FloatFunction<T> mapper) {
+	public FloatSeq mapFloat(ToFloatFunction<T> mapper) {
 		FloatSeq arr = new FloatSeq(size);
 		for (int i = 0; i < size; i++) {
-			arr.add(mapper.apply(items[i]));
+			arr.add(mapper.applyAsFloat(items[i]));
 		}
 		return arr;
 	}
 
-	public <R> R reduce(R initial, Function2<T, R, R> reducer) {
+	public <R> R reduce(R initial, BiFunction<T, R, R> reducer) {
 		R result = initial;
 		for (int i = 0; i < size; i++) {
-			result = reducer.get(items[i], result);
+			result = reducer.apply(items[i], result);
 		}
 		return result;
 	}
 
-	public boolean allMatch(BoolFunction<T> predicate) {
+	public boolean allMatch(ToBooleanFunction<T> predicate) {
 		for (int i = 0; i < size; i++) {
-			if (!predicate.apply(items[i])) {
+			if (!predicate.applyAsBoolean(items[i])) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public boolean contains(BoolFunction<T> predicate) {
+	public boolean contains(ToBooleanFunction<T> predicate) {
 		for (int i = 0; i < size; i++) {
-			if (predicate.apply(items[i])) {
+			if (predicate.applyAsBoolean(items[i])) {
 				return true;
 			}
 		}
@@ -298,13 +298,13 @@ public class Seq<T> implements Iterable<T> {
 		return result;
 	}
 
-	public T min(BoolFunction<T> filter, FloatFunction<T> func) {
+	public T min(ToBooleanFunction<T> filter, ToFloatFunction<T> func) {
 		T result = null;
 		float min = Float.MAX_VALUE;
 		for (int i = 0; i < size; i++) {
 			T t = items[i];
-			if (!filter.apply(t)) continue;
-			float val = func.apply(t);
+			if (!filter.applyAsBoolean(t)) continue;
+			float val = func.applyAsFloat(t);
 			if (val <= min) {
 				result = t;
 				min = val;
@@ -313,23 +313,23 @@ public class Seq<T> implements Iterable<T> {
 		return result;
 	}
 
-	public T min(BoolFunction<T> filter, Comparator<T> func) {
+	public T min(ToBooleanFunction<T> filter, Comparator<T> func) {
 		T result = null;
 		for (int i = 0; i < size; i++) {
 			T t = items[i];
-			if (filter.apply(t) && (result == null || func.compare(result, t) > 0)) {
+			if (filter.applyAsBoolean(t) && (result == null || func.compare(result, t) > 0)) {
 				result = t;
 			}
 		}
 		return result;
 	}
 
-	public T min(FloatFunction<T> func) {
+	public T min(ToFloatFunction<T> func) {
 		T result = null;
 		float min = Float.MAX_VALUE;
 		for (int i = 0; i < size; i++) {
 			T t = items[i];
-			float val = func.apply(t);
+			float val = func.applyAsFloat(t);
 			if (val <= min) {
 				result = t;
 				min = val;
@@ -338,12 +338,12 @@ public class Seq<T> implements Iterable<T> {
 		return result;
 	}
 
-	public T max(FloatFunction<T> func) {
+	public T max(ToFloatFunction<T> func) {
 		T result = null;
 		float max = Float.NEGATIVE_INFINITY;
 		for (int i = 0; i < size; i++) {
 			T t = items[i];
-			float val = func.apply(t);
+			float val = func.applyAsFloat(t);
 			if (val >= max) {
 				result = t;
 				max = val;
@@ -352,9 +352,9 @@ public class Seq<T> implements Iterable<T> {
 		return result;
 	}
 
-	public T find(BoolFunction<T> predicate) {
+	public T find(ToBooleanFunction<T> predicate) {
 		for (int i = 0; i < size; i++) {
-			if (predicate.apply(items[i])) {
+			if (predicate.applyAsBoolean(items[i])) {
 				return items[i];
 			}
 		}
@@ -591,10 +591,10 @@ public class Seq<T> implements Iterable<T> {
 		return -1;
 	}
 
-	public int indexOf(BoolFunction<T> value) {
+	public int indexOf(ToBooleanFunction<T> value) {
 		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
-			if (value.apply(items[i])) return i;
+			if (value.applyAsBoolean(items[i])) return i;
 		return -1;
 	}
 
@@ -628,9 +628,9 @@ public class Seq<T> implements Iterable<T> {
 	 *
 	 * @return whether the item was found and removed.
 	 */
-	public boolean remove(BoolFunction<T> value) {
+	public boolean remove(ToBooleanFunction<T> value) {
 		for (int i = 0; i < size; i++) {
-			if (value.apply(items[i])) {
+			if (value.applyAsBoolean(items[i])) {
 				remove(i);
 				return true;
 			}
@@ -696,10 +696,10 @@ public class Seq<T> implements Iterable<T> {
 	}
 
 	/** @return this object */
-	public Seq<T> removeAll(BoolFunction<T> pred) {
+	public Seq<T> removeAll(ToBooleanFunction<T> pred) {
 		Iterator<T> iter = iterator();
 		while (iter.hasNext()) {
-			if (pred.apply(iter.next())) {
+			if (pred.applyAsBoolean(iter.next())) {
 				iter.remove();
 			}
 		}
@@ -861,7 +861,7 @@ public class Seq<T> implements Iterable<T> {
 		return this;
 	}
 
-	public Seq<T> sort(FloatFunction<? super T> comparator) {
+	public Seq<T> sort(ToFloatFunction<? super T> comparator) {
 		Sort.instance().sort(items, Structs.comparingFloat(comparator), 0, size);
 		return this;
 	}
@@ -871,10 +871,10 @@ public class Seq<T> implements Iterable<T> {
 		return this;
 	}
 
-	public Seq<T> selectFrom(Seq<T> base, BoolFunction<T> predicate) {
+	public Seq<T> selectFrom(Seq<T> base, ToBooleanFunction<T> predicate) {
 		clear();
 		base.forEach(t -> {
-			if (predicate.apply(t)) {
+			if (predicate.applyAsBoolean(t)) {
 				add(t);
 			}
 		});
@@ -894,10 +894,10 @@ public class Seq<T> implements Iterable<T> {
 	}
 
 	/** Allocates a new array with all elements that match the predicate. */
-	public Seq<T> select(BoolFunction<T> predicate) {
+	public Seq<T> select(ToBooleanFunction<T> predicate) {
 		Seq<T> arr = new Seq<>();
 		for (int i = 0; i < size; i++) {
-			if (predicate.apply(items[i])) {
+			if (predicate.applyAsBoolean(items[i])) {
 				arr.add(items[i]);
 			}
 		}
@@ -905,14 +905,14 @@ public class Seq<T> implements Iterable<T> {
 	}
 
 	/** Removes everything that does not match this predicate. */
-	public Seq<T> retainAll(BoolFunction<T> predicate) {
-		return removeAll(e -> !predicate.apply(e));
+	public Seq<T> retainAll(ToBooleanFunction<T> predicate) {
+		return removeAll(e -> !predicate.applyAsBoolean(e));
 	}
 
-	public int count(BoolFunction<T> predicate) {
+	public int count(ToBooleanFunction<T> predicate) {
 		int count = 0;
 		for (int i = 0; i < size; i++) {
-			if (predicate.apply(items[i])) {
+			if (predicate.applyAsBoolean(items[i])) {
 				count++;
 			}
 		}
@@ -1022,10 +1022,11 @@ public class Seq<T> implements Iterable<T> {
 	 * Otherwise use {@link #toArray(Class)} to specify the array type.
 	 */
 	public T[] toArray() {
-		return toArray(items.getClass().getComponentType());
+		var at = items.getClass();
+		return toArray(at.isArray() ? at.getComponentType() : at);
 	}
 
-	public <V> V[] toArray(Class type) {
+	public <V> V[] toArray(Class<?> type) {
 		V[] result = (V[]) java.lang.reflect.Array.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
@@ -1048,7 +1049,7 @@ public class Seq<T> implements Iterable<T> {
 	public boolean equals(Object object) {
 		if (object == this) return true;
 		if (!ordered) return false;
-		if (!(object instanceof Seq array)) return false;
+		if (!(object instanceof Seq<?> array)) return false;
 		if (!array.ordered) return false;
 		int n = size;
 		if (n != array.size) return false;

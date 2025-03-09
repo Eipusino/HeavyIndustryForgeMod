@@ -1,6 +1,6 @@
 package com.lonetrail.util.function;
 
 @FunctionalInterface
-public interface FloatFunction<T> {
-	float apply(T t);
+public interface ToByteFunction<T> {
+	byte applyAsByte(T t);
 }
