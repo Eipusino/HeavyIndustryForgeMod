@@ -13,22 +13,40 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public final class ReflectUtils {
-	public static ReflectionFactory factory;
-	public static Lookup lookup;
+	/** An instance of ReflectionFactory for temporary use. */
+	static ReflectionFactory factory;
+	/**
+	 * A lookup with trusted permission.
+	 * <br>It completely violates Java's encapsulation security, do not use it unless necessary.
+	 * <p>If needed, please call the method: {@link #lookup()}.
+	 *
+	 * @see #lookup()
+	 */
+	static Lookup lookup;
 
-	public static MethodHandle getDeclaredFields, getDeclaredMethods, getDeclaredConstructors;
+	static MethodHandle getDeclaredFields, getDeclaredMethods, getDeclaredConstructors;
 
+	// The exceptions thrown during initialization are collectively handled in a try-catch block.
 	public static void init() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+		// Get an instance of ReflectionFactory. I hope it won't be intercepted by the Security Manager.
 		factory = ReflectionFactory.getReflectionFactory();
 
+		// Bypass security checks to obtain a constructor of an accessible Lookup class and create a trusted Lookup with permission.
 		Constructor<?> constructor = factory.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class));
 		lookup = (Lookup) constructor.newInstance(Object.class, null, -1);
 
+		// Obtain native reflection methods, which do not have filtering checks.
 		getDeclaredFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
 		getDeclaredMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
 		getDeclaredConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 	}
 
+	/**
+	 * Search for fields by name without throwing exceptions and without being restricted by filtering
+	 * checks.
+	 *
+	 * @return The field, or {@code null} if not found.
+	 */
 	public static Field getField(Class<?> type, String name) {
 		Field[] fields = getFields(type);
 		for (Field field : fields) {
@@ -37,6 +55,12 @@ public final class ReflectUtils {
 		return null;
 	}
 
+	/**
+	 * Search for fields based on custom criteria without throwing exceptions and without being restricted
+	 * by filtering checks.
+	 *
+	 * @return The field, or {@code null} if not found.
+	 */
 	public static Field getField(Class<?> type, Predicate<Field> predicate) {
 		Field[] fields = getFields(type);
 		for (Field field : fields) {
@@ -108,5 +132,9 @@ public final class ReflectUtils {
 		} catch (Throwable e) {
 			return type.getDeclaredConstructors();
 		}
+	}
+
+	public static Lookup lookup() {
+		return lookup;
 	}
 }

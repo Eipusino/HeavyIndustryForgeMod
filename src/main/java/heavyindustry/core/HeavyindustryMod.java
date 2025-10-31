@@ -1,6 +1,7 @@
 package heavyindustry.core;
 
 import com.mojang.logging.LogUtils;
+import heavyindustry.util.Demodulator;
 import heavyindustry.util.ReflectUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
@@ -77,9 +78,8 @@ public final class HeavyindustryMod {
 		try {
 			ReflectUtils.init();
 
-			for (var field : ReflectUtils.class.getFields()) {
-				LOGGER.debug(field.get(null).toString());
-			}
+			Demodulator.init();
+			Demodulator.openModules();
 		} catch (Throwable e) {
 			LOGGER.warn("Initialization of ReflectUtils failed", e);
 		}
@@ -112,7 +112,7 @@ public final class HeavyindustryMod {
         if (Config.logDirtBlock)
             LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
+	    LOGGER.info("{}{}", Config.magicNumberIntroduction, Config.magicNumber);
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
