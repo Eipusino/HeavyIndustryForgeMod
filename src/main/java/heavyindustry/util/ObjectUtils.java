@@ -68,27 +68,17 @@ public final class ObjectUtils {
 
 					if (valueType.isArray()) {
 						// I think using instanceof would be better.
-						if (value instanceof float[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof int[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof boolean[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof byte[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof char[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof double[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof long[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof short[] array) {
-							ArrayUtils.append(builder, array);
-						} else if (value instanceof Object[] array) {
-							ArrayUtils.append(builder, array);
-						} else {
-							// It shouldn't have happened...
-							builder.append("???");
+						switch (value) {
+							case float[] array -> ArrayUtils.append(builder, array);
+							case int[] array -> ArrayUtils.append(builder, array);
+							case boolean[] array -> ArrayUtils.append(builder, array);
+							case byte[] array -> ArrayUtils.append(builder, array);
+							case char[] array -> ArrayUtils.append(builder, array);
+							case double[] array -> ArrayUtils.append(builder, array);
+							case long[] array -> ArrayUtils.append(builder, array);
+							case short[] array -> ArrayUtils.append(builder, array);
+							case Object[] array -> ArrayUtils.append(builder, array);
+							default -> builder.append("???");// It shouldn't have happened...
 						}
 					} else {
 						builder.append(value);

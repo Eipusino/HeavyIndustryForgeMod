@@ -15,18 +15,15 @@ public final class UnsafeUtils {
 	private UnsafeUtils() {}
 
 	public static <T> T getObject(Class<?> type, String name, Object object) {
-		try {
-			return getObject(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? null : getObject(field, object);
 	}
 
 	/**
 	 * Retrieve the value of a field through {@code Unsafe}. If the field is {@code static}, object can be {@code null}.
 	 * Otherwise, {@code object} must not be {@code null} and be an instance of {@code field.getDeclaringClass()}.
 	 *
-	 * @throws IllegalArgumentException If any of the following  is true:
+	 * @throws IllegalArgumentException If any of the following is true:
 	 *                                  <ul><li>If the field type is a primitive type.
 	 *                                  <li>If the field is not {@code static} and the {@code object} is not an
 	 *                                                                   instance of {@code field.getDeclaringClass()} or {@code null}.</ul>
@@ -48,18 +45,15 @@ public final class UnsafeUtils {
 	}
 
 	public static boolean getBool(Class<?> type, String name, Object object) {
-		try {
-			return getBool(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field != null && getBool(field, object);
 	}
 
 	/**
 	 * Retrieve the value of a field through {@code Unsafe}. If the field is {@code static}, object can be {@code null}.
 	 * Otherwise, {@code object} must not be {@code null} and be an instance of {@code field.getDeclaringClass()}.
 	 *
-	 * @throws IllegalArgumentException If any of the following  is true:
+	 * @throws IllegalArgumentException If any of the following is true:
 	 *                                  <ul><li>If the field type is not boolean.
 	 *                                  <li>If the field is not {@code static} and the {@code object} is not an
 	 *                                  instance of {@code field.getDeclaringClass()} or {@code null}.</ul>
@@ -79,11 +73,8 @@ public final class UnsafeUtils {
 	}
 
 	public static byte getByte(Class<?> type, String name, Object object) {
-		try {
-			return getByte(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0 : getByte(field, object);
 	}
 
 	public static byte getByte(Field field, Object object) {
@@ -101,11 +92,8 @@ public final class UnsafeUtils {
 	}
 
 	public static short getShort(Class<?> type, String name, Object object) {
-		try {
-			return getShort(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0 : getShort(field, object);
 	}
 
 	public static short getShort(Field field, Object object) {
@@ -123,11 +111,8 @@ public final class UnsafeUtils {
 	}
 
 	public static int getInt(Class<?> type, String name, Object object) {
-		try {
-			return getInt(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0 : getInt(field, object);
 	}
 
 	public static int getInt(Field field, Object object) {
@@ -145,11 +130,8 @@ public final class UnsafeUtils {
 	}
 
 	public static long getLong(Class<?> type, String name, Object object) {
-		try {
-			return getLong(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0l : getLong(field, object);
 	}
 
 	public static long getLong(Field field, Object object) {
@@ -167,11 +149,8 @@ public final class UnsafeUtils {
 	}
 
 	public static float getFloat(Class<?> type, String name, Object object) {
-		try {
-			return getFloat(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0f : getFloat(field, object);
 	}
 
 	public static float getFloat(Field field, Object object) {
@@ -181,19 +160,16 @@ public final class UnsafeUtils {
 		boolean isStatic = Modifier.isStatic(modifiers);
 		long offset = isStatic ? unsafe.staticFieldOffset(field) : unsafe.objectFieldOffset(field);
 
-		Class<?> type = field.getDeclaringClass();
+		Object o = isStatic ? unsafe.staticFieldBase(field) : requireNonNullInstance(field.getDeclaringClass(), object);
 
 		return Modifier.isVolatile(modifiers) ?
-				unsafe.getFloatVolatile(isStatic ? type : requireNonNullInstance(type, object), offset) :
-				unsafe.getFloat(isStatic ? type : requireNonNullInstance(type, object), offset);
+				unsafe.getFloatVolatile(o, offset) :
+				unsafe.getFloat(o, offset);
 	}
 
 	public static double getDouble(Class<?> type, String name, Object object) {
-		try {
-			return getDouble(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? 0d : getDouble(field, object);
 	}
 
 	public static double getDouble(Field field, Object object) {
@@ -211,11 +187,8 @@ public final class UnsafeUtils {
 	}
 
 	public static char getChar(Class<?> type, String name, Object object) {
-		try {
-			return getChar(type.getDeclaredField(name), object);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		return field == null ? '\u0000' : getChar(field, object);
 	}
 
 	public static char getChar(Field field, Object object) {
@@ -233,20 +206,19 @@ public final class UnsafeUtils {
 	}
 
 	public static void setObject(Class<?> type, String name, Object object, Object value) {
-		try {
-			setObject(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setObject(field, object, value);
 	}
 
 	/**
 	 * Set the value of a field through {@code Unsafe}. If the field is {@code static}, object can be {@code null}.
 	 * Otherwise, {@code object} must not be {@code null} and be an instance of {@code field.getDeclaringClass()}.
+	 * <p><strong>Note: This is not useful for fields that can inline values during compilation.</strong>
 	 *
-	 * @throws IllegalArgumentException If the field type is a primitive type.
-	 * @throws ClassCastException If the field is not {@code static} and the {@code object} is not an
-	 *                                  instance of {@code field.getDeclaringClass()} or {@code null}.
+	 * @throws IllegalArgumentException If any of the following is true:
+	 *                                  <ul><li>If the field type is a primitive type.
+	 *                                  <li>If the field is not {@code static} and the {@code object} is not an
+	 *                                                                   instance of {@code field.getDeclaringClass()} or {@code null}.</ul>
 	 */
 	public static void setObject(Field field, Object object, Object value) {
 		if (field.getType().isPrimitive()) throw new IllegalArgumentException("Method 'getObject' does not support field of primitive types");
@@ -266,13 +238,11 @@ public final class UnsafeUtils {
 	}
 
 	public static void setBool(Class<?> type, String name, Object object, boolean value) {
-		try {
-			setBool(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setBool(field, object, value);
 	}
 
+	/** <p><strong>Note: This is not useful for fields that can inline values during compilation.</strong> */
 	public static void setBool(Field field, Object object, boolean value) {
 		if (field.getType() != boolean.class) throw new IllegalArgumentException("Method 'setBool' does not support field other than boolean types");
 
@@ -290,11 +260,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setByte(Class<?> type, String name, Object object, byte value) {
-		try {
-			setByte(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setByte(field, object, value);
 	}
 
 	public static void setByte(Field field, Object object, byte value) {
@@ -314,11 +281,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setShort(Class<?> type, String name, Object object, short value) {
-		try {
-			setShort(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setShort(field, object, value);
 	}
 
 	public static void setShort(Field field, Object object, short value) {
@@ -338,11 +302,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setInt(Class<?> type, String name, Object object, int value) {
-		try {
-			setInt(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setInt(field, object, value);
 	}
 
 	public static void setInt(Field field, Object object, int value) {
@@ -362,11 +323,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setLong(Class<?> type, String name, Object object, long value) {
-		try {
-			setLong(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setLong(field, object, value);
 	}
 
 	public static void setLong(Field field, Object object, long value) {
@@ -386,11 +344,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setFloat(Class<?> type, String name, Object object, float value) {
-		try {
-			setFloat(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setFloat(field, object, value);
 	}
 
 	public static void setFloat(Field field, Object object, float value) {
@@ -410,11 +365,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setDouble(Class<?> type, String name, Object object, double value) {
-		try {
-			setDouble(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setDouble(field, object, value);
 	}
 
 	public static void setDouble(Field field, Object object, double value) {
@@ -434,11 +386,8 @@ public final class UnsafeUtils {
 	}
 
 	public static void setChar(Class<?> type, String name, Object object, char value) {
-		try {
-			setChar(type.getDeclaredField(name), object, value);
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
+		Field field = ReflectUtils.getField(type, name);
+		if (field != null) setChar(field, object, value);
 	}
 
 	public static void setChar(Field field, Object object, char value) {
@@ -469,6 +418,7 @@ public final class UnsafeUtils {
 		int modifiers = field.getModifiers();
 		boolean isStatic = Modifier.isStatic(modifiers);
 		long offset = isStatic ? unsafe.staticFieldOffset(field) : unsafe.objectFieldOffset(field);
+
 		Class<?> type = field.getType();
 		Object o = isStatic ? unsafe.staticFieldBase(field) : requireNonNullInstance(field.getDeclaringClass(), object);
 
@@ -515,6 +465,7 @@ public final class UnsafeUtils {
 		int modifiers = field.getModifiers();
 		boolean isStatic = Modifier.isStatic(modifiers);
 		long offset = isStatic ? unsafe.staticFieldOffset(field) : unsafe.objectFieldOffset(field);
+
 		Class<?> type = field.getType();
 		Object o = isStatic ? unsafe.staticFieldBase(field) : requireNonNullInstance(field.getDeclaringClass(), object);
 

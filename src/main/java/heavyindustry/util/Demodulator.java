@@ -19,7 +19,7 @@ public final class Demodulator {
 
 	// The exceptions thrown during initialization are collectively handled in a try-catch block.
 	public static void init() throws NoSuchMethodException, IllegalAccessException {
-		implAddOpens = ReflectUtils.lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class));
+		implAddOpens = ReflectUtils.lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
 	}
 
 	/**

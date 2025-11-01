@@ -29,6 +29,7 @@ public final class ReflectUtils {
 	// The exceptions thrown during initialization are collectively handled in a try-catch block.
 	public static void init() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 		// Get an instance of ReflectionFactory. I hope it won't be intercepted by the Security Manager.
+		// Let's just hope there is no security manager installed;
 		factory = ReflectionFactory.getReflectionFactory();
 
 		// Bypass security checks to obtain a constructor of an accessible Lookup class and create a trusted Lookup with permission.
