@@ -180,7 +180,6 @@ public interface ExtraVariableComp {
 			}
 			case AtomicBoolean b -> b.get();
 			case Boolean n -> n;
-
 			default -> throw new ClassCastException(res + " is not a boolean value or atomic boolean");
 		};
 	}
@@ -237,7 +236,6 @@ public interface ExtraVariableComp {
 			case null -> def;
 			case AtomicInteger i -> i.get();
 			case Number n -> n.intValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic integer");
 		};
 	}
@@ -258,7 +256,6 @@ public interface ExtraVariableComp {
 			}
 			case AtomicInteger i -> i.get();
 			case Number n -> n.intValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic integer");
 		};
 	}
@@ -315,7 +312,6 @@ public interface ExtraVariableComp {
 			case null -> def;
 			case AtomicLong l -> l.get();
 			case Number n -> n.longValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic long");
 		};
 	}
@@ -336,7 +332,6 @@ public interface ExtraVariableComp {
 			}
 			case AtomicLong l -> l.get();
 			case Number n -> n.longValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic long");
 		};
 	}
@@ -393,7 +388,6 @@ public interface ExtraVariableComp {
 			case null -> def;
 			case AtomicFloat f -> f.get();
 			case Number n -> n.floatValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic float");
 		};
 	}
@@ -414,7 +408,6 @@ public interface ExtraVariableComp {
 			}
 			case AtomicFloat l -> l.get();
 			case Number n -> n.floatValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic float");
 		};
 	}
@@ -471,7 +464,6 @@ public interface ExtraVariableComp {
 			case null -> def;
 			case AtomicDouble f -> f.get();
 			case Number n -> n.doubleValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic double");
 		};
 	}
@@ -492,7 +484,6 @@ public interface ExtraVariableComp {
 			}
 			case AtomicDouble d -> d.get();
 			case Number n -> n.doubleValue();
-
 			default -> throw new ClassCastException(res + " is not a number or atomic double");
 		};
 	}
