@@ -1,5 +1,6 @@
 package heavyindustry.util;
 
+import heavyindustry.math.Mathf;
 import heavyindustry.util.holder.ObjectHolder;
 
 import java.lang.reflect.Array;
@@ -73,7 +74,7 @@ public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iter
 	@SuppressWarnings("unchecked")
 	public CollectionObjectMap(Class<?> keyType, Class<?> valueType, int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = MathUtils.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
+		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 0x40000000)
 			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
@@ -481,7 +482,7 @@ public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iter
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
 		if (capacity <= maximumCapacity) return;
-		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
+		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
 
@@ -590,7 +591,7 @@ public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iter
 		if (additionalCapacity < 0)
 			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	@SuppressWarnings("unchecked")

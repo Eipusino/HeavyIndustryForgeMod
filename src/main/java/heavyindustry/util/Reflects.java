@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public final class ReflectUtils {
+public final class Reflects {
 	/** An instance of ReflectionFactory for temporary use. */
 	static ReflectionFactory factory;
 	/**

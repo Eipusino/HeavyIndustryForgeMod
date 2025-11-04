@@ -1,5 +1,6 @@
 package heavyindustry.util;
 
+import heavyindustry.math.Mathf;
 import net.minecraft.util.ToFloatFunction;
 
 import java.lang.reflect.Array;
@@ -100,7 +101,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 	 *                memory copy.
 	 */
 	public CollectionList(boolean ordered, E[] array, int start, int count) {
-		this(ordered, count, array.getClass().getComponentType());
+		this(ordered, count, array.getClass().componentType());
 		size = count;
 		System.arraycopy(array, start, items, 0, size);
 	}
@@ -134,7 +135,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 
 	/** @see #CollectionList(Object[]) */
 	public static <T> CollectionList<T> select(T[] array, Predicate<T> test) {
-		CollectionList<T> out = new CollectionList<>(array.length, array.getClass().getComponentType());
+		CollectionList<T> out = new CollectionList<>(array.length, array.getClass().componentType());
 		for (T t : array) {
 			if (test.test(t)) {
 				out.add(t);
@@ -499,7 +500,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 
 	public E getFrac(float index) {
 		if (isEmpty()) return null;
-		return get(MathUtils.clamp((int) (index * size), 0, size - 1));
+		return get(Mathf.clamp((int) (index * size), 0, size - 1));
 	}
 
 	@Override
@@ -971,7 +972,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 	@SuppressWarnings("unchecked")
 	protected E[] resize(int newSize) {
 		//avoid reflection when possible
-		E[] newItems = (E[]) (items.getClass() == Object[].class ? new Object[newSize] : Array.newInstance(items.getClass().getComponentType(), newSize));
+		E[] newItems = (E[]) Array.newInstance(componentType, newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		items = newItems;
 		return newItems;
@@ -992,7 +993,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 	}
 
 	public void sort(ToFloatFunction<? super E> comparator) {
-		Arrays.sort(items, 0, size, ArrayUtils.comparingFloat(comparator));
+		Arrays.sort(items, 0, size, Structs.comparingFloat(comparator));
 	}
 
 	public <U extends Comparable<? super U>> CollectionList<E> sortComparing(Function<? super E, ? extends U> keyExtractor) {
@@ -1062,7 +1063,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 		if (kthLowest < 1) {
 			throw new IllegalArgumentException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
-		return ArrayUtils.select(items, comparator, kthLowest, size);
+		return Structs.select(items, comparator, kthLowest, size);
 	}
 
 	/**
@@ -1076,7 +1077,7 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 		if (kthLowest < 1) {
 			throw new IllegalArgumentException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
-		return ArrayUtils.selectIndex(items, comparator, kthLowest, size);
+		return Structs.selectIndex(items, comparator, kthLowest, size);
 	}
 
 	public CollectionList<E> reverse() {
@@ -1281,8 +1282,8 @@ public class CollectionList<E> extends AbstractList<E> implements Cloneable{
 	}
 
 	public class Iter implements ListIterator<E> {
-		int cursor;
-		boolean done = true;
+		protected int cursor;
+		protected boolean done = true;
 
 		public Iter(int index) {
 			cursor = index;

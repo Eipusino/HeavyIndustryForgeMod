@@ -1,7 +1,7 @@
-package heavyindustry.util;
+package heavyindustry.math;
 
-public final class MathUtils {
-	private MathUtils() {}
+public final class Mathf {
+	private Mathf() {}
 
 	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
 	public static int nextPowerOfTwo(int value) {

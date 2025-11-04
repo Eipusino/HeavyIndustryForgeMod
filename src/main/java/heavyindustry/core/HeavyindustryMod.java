@@ -2,7 +2,7 @@ package heavyindustry.core;
 
 import com.mojang.logging.LogUtils;
 import heavyindustry.util.Demodulator;
-import heavyindustry.util.ReflectUtils;
+import heavyindustry.util.Reflects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
@@ -76,12 +76,12 @@ public final class HeavyindustryMod {
 
 	static {
 		try {
-			ReflectUtils.init();
+			Reflects.init();
 
 			Demodulator.init();
 			Demodulator.openModules();
 		} catch (Throwable e) {
-			LOGGER.warn("Initialization of ReflectUtils failed", e);
+			LOGGER.warn("Initialization of Reflects failed", e);
 		}
 	}
 

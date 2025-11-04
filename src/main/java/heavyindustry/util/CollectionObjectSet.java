@@ -1,5 +1,7 @@
 package heavyindustry.util;
 
+import heavyindustry.math.Mathf;
+
 import java.lang.reflect.Array;
 import java.util.AbstractSet;
 import java.util.Arrays;
@@ -52,7 +54,7 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Cloneable 
 	@SuppressWarnings("unchecked")
 	public CollectionObjectSet(Class<?> type, int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = MathUtils.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
+		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
 		if (initialCapacity > 1 << 30)
 			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
@@ -431,7 +433,7 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Cloneable 
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
 		if (capacity <= maximumCapacity) return;
-		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
+		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
 
@@ -513,7 +515,7 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Cloneable 
 		if (additionalCapacity < 0)
 			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
 	}
 
 	@SuppressWarnings("unchecked")

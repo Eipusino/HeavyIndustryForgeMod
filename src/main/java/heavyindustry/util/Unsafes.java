@@ -6,16 +6,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.ProtectionDomain;
 
-import static heavyindustry.util.ObjectUtils.requireAssignableFrom;
-import static heavyindustry.util.ObjectUtils.requireNonNullInstance;
+import static heavyindustry.util.Structs.requireAssignableFrom;
+import static heavyindustry.util.Structs.requireNonNullInstance;
 
-public final class UnsafeUtils {
+public final class Unsafes {
 	static Unsafe unsafe = Unsafe.getUnsafe();
 
-	private UnsafeUtils() {}
+	private Unsafes() {}
 
 	public static <T> T getObject(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? null : getObject(field, object);
 	}
 
@@ -45,7 +45,7 @@ public final class UnsafeUtils {
 	}
 
 	public static boolean getBool(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field != null && getBool(field, object);
 	}
 
@@ -73,7 +73,7 @@ public final class UnsafeUtils {
 	}
 
 	public static byte getByte(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0 : getByte(field, object);
 	}
 
@@ -92,7 +92,7 @@ public final class UnsafeUtils {
 	}
 
 	public static short getShort(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0 : getShort(field, object);
 	}
 
@@ -111,7 +111,7 @@ public final class UnsafeUtils {
 	}
 
 	public static int getInt(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0 : getInt(field, object);
 	}
 
@@ -130,7 +130,7 @@ public final class UnsafeUtils {
 	}
 
 	public static long getLong(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0l : getLong(field, object);
 	}
 
@@ -149,7 +149,7 @@ public final class UnsafeUtils {
 	}
 
 	public static float getFloat(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0f : getFloat(field, object);
 	}
 
@@ -168,7 +168,7 @@ public final class UnsafeUtils {
 	}
 
 	public static double getDouble(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? 0d : getDouble(field, object);
 	}
 
@@ -187,7 +187,7 @@ public final class UnsafeUtils {
 	}
 
 	public static char getChar(Class<?> type, String name, Object object) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		return field == null ? '\u0000' : getChar(field, object);
 	}
 
@@ -206,7 +206,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setObject(Class<?> type, String name, Object object, Object value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setObject(field, object, value);
 	}
 
@@ -238,7 +238,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setBool(Class<?> type, String name, Object object, boolean value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setBool(field, object, value);
 	}
 
@@ -260,7 +260,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setByte(Class<?> type, String name, Object object, byte value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setByte(field, object, value);
 	}
 
@@ -281,7 +281,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setShort(Class<?> type, String name, Object object, short value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setShort(field, object, value);
 	}
 
@@ -302,7 +302,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setInt(Class<?> type, String name, Object object, int value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setInt(field, object, value);
 	}
 
@@ -323,7 +323,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setLong(Class<?> type, String name, Object object, long value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setLong(field, object, value);
 	}
 
@@ -344,7 +344,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setFloat(Class<?> type, String name, Object object, float value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setFloat(field, object, value);
 	}
 
@@ -365,7 +365,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setDouble(Class<?> type, String name, Object object, double value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setDouble(field, object, value);
 	}
 
@@ -386,7 +386,7 @@ public final class UnsafeUtils {
 	}
 
 	public static void setChar(Class<?> type, String name, Object object, char value) {
-		Field field = ReflectUtils.getField(type, name);
+		Field field = Reflects.getField(type, name);
 		if (field != null) setChar(field, object, value);
 	}
 
